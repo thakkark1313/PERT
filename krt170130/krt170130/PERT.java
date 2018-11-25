@@ -103,7 +103,7 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
         return criticalNodes;
     }
     public int criticalPath() {
-        return calculateCritical() + 1;
+        return get(this.finishList.get(this.finishList.size() - 1)).lc;
     }
 
     public boolean critical(Vertex u) {
