@@ -17,12 +17,13 @@ import java.util.ListIterator;
 import java.util.Scanner;
 
 public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
-    List<Vertex> finishList;
+    List<Vertex> finishList; // for storing the topological order of the graph
     public static class PERTVertex implements Factory {
-        int lc;
-        int ec;
-        int slack;
-        int duration;
+        int lc; // latest completion time of u
+        int ec; // earliest completion time of u
+        int slack; // Slack of u
+        int duration; // duration of u
+        // constructor of PERTVertex class
         public PERTVertex(Vertex u) {
             this.lc = 0;
             this.ec = 0;
@@ -32,6 +33,10 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
         public PERTVertex make(Vertex u) { return new PERTVertex(u); }
     }
 
+    /** Constructor of PERT class
+     * Edges are added in the graph
+     * @param g
+     */
     public PERT(Graph g) {
         super(g, new PERTVertex(null));
         for (Vertex u: g) {
@@ -44,10 +49,19 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
         this.finishList = DFS.topologicalOrder1(g);
     }
 
+    /**
+     * setDuration method
+     * set given duration of a vertex u
+     * @param u
+     * @param d
+     */
     public void setDuration(Vertex u, int d) {
         get(u).duration = d;
     }
 
+    /** pert method : updates the EC, LC for every vertex
+     * @return true or false
+     */
     public boolean pert() {
         if(this.finishList == null)
             return true;
@@ -82,18 +96,38 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
 
         return false;
     }
+
+    /**
+     * get earliest completion time of u
+     * @param u
+     * @return EC time of vertex u
+     */
     public int ec(Vertex u) {
         return get(u).ec;
     }
 
+    /**
+     * get latest completion time of u
+     * @param u
+     * @return LC time of vertex u
+     */
     public int lc(Vertex u) {
         return get(u).lc;
     }
 
+    /**
+     * get slack of u
+     * @param u
+     * @return slack of vertex u
+     */
     public int slack(Vertex u) {
         return get(u).slack;
     }
 
+    /** calculateCritical method
+     * to find number of critical nodes in a graph g
+     * @return return number of critical nodes
+     */
     private int calculateCritical() {
         int criticalNodes  = 0;
         for (Vertex u: g) {
@@ -102,14 +136,29 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
         }
         return criticalNodes;
     }
+
+    /** criticalPath method
+     * to find the length of the critical path in a graph g
+     * @return length of the critical path of a graph
+     */
     public int criticalPath() {
         return calculateCritical() + 1;
     }
 
+    /** critical method
+     * checks whether vertex u is on a critical path or not
+     * @param u
+     * @return true or false
+     */
     public boolean critical(Vertex u) {
         return get(u).slack == 0;
     }
 
+    /**
+     * numCritical method
+     * To find Number of critical nodes in graph
+     * @return number of critical nodes
+     */
     public int numCritical() {
         return calculateCritical();
     }
