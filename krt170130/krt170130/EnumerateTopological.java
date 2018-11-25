@@ -10,6 +10,7 @@ import rbk.Graph.Vertex;
 import rbk.Graph.Edge;
 import rbk.Graph.Factory;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -18,15 +19,22 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
     long count;      // Number of permutations or combinations visited
     Selector sel;
     List <Vertex> finishList;
-    HashSet<Vertex> visited;
+    HashMap<Vertex, Integer> inDegree;
     public EnumerateTopological(Graph g) {
         super(g, new EnumVertex());
         print = false;
         count = 0;
         sel = new Selector();
         this.finishList = DFS.topologicalOrder1(g);
-        this.visited = new HashSet<>();
-        System.out.println(this.finishList);
+        this.inDegree = getInDegree();
+    }
+
+    private HashMap<Vertex,Integer> getInDegree() {
+        HashMap <Vertex, Integer> hm = new HashMap<>();
+        for (Vertex v: g) {
+            hm.put(v, v.inDegree());
+        }
+        return hm;
     }
 
     static class EnumVertex implements Factory {
@@ -37,22 +45,26 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
     class Selector extends Enumerate.Approver<Vertex> {
         @Override
         public boolean select(Vertex u) {
-            for (Edge edge: g.outEdges(u)) {
-                if(visited.contains(edge.otherEnd(u))) return false;
+            if(inDegree.get(u) == 0) {
+                for (Edge edge: g.outEdges(u)) {
+                    inDegree.put(edge.otherEnd(u), inDegree.get(edge.otherEnd(u)) - 1);
+                }
+                return true;
             }
-            visited.add(u);
-            return true;
+            return false;
         }
 
         @Override
         public void unselect(Vertex u) {
-            visited.remove(u);
+            for (Edge edge: g.outEdges(u)) {
+                inDegree.put(edge.otherEnd(u), inDegree.get(edge.otherEnd(u)) + 1);
+            }
         }
 
         @Override
         public void visit(Vertex[] arr, int k) {
             count++;
-            if(print) {
+            if(!print) {
                 for(Vertex u: arr) {
                     System.out.print(u + " ");
                 }
@@ -69,12 +81,12 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
         return count;
     }
     private void visit(List <Vertex> current) {
-        if(!this.print) {
+        /*if(!this.print) {
             for (Vertex v: current) {
                 System.out.print(v + " ");
             }
             System.out.println();
-        }
+        }*/
         count++;
     }
 
@@ -85,11 +97,17 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
             return;
         }
         int d = this.finishList.size() - c;
-        permute(c-1);
-        for (int i=d+1; i<this.finishList.size();i++) {
-            swap(d, i);
+        if(this.sel.select(this.finishList.get(d))) {
             permute(c-1);
-            swap(d, i);
+            this.sel.unselect(this.finishList.get(d));
+        }
+        for (int i=d+1; i<this.finishList.size();i++) {
+            if(this.sel.select(this.finishList.get(i))) {
+                swap(d, i);
+                permute(c - 1);
+                swap(d, i);
+                this.sel.unselect(this.finishList.get(i));
+            }
         }
     }
 
