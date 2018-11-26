@@ -1,5 +1,9 @@
 /* Driver code for PERT algorithm (LP4)
  * @author
+ * Utkarsh Gandhi (usg170030)
+ * Khushboo Desai (kxd180009)
+ * Esha Punjabi   (ehp170000)
+ * Karan Thakker  (krt170130)
  */
 
 // change package to your netid

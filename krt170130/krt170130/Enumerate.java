@@ -1,7 +1,11 @@
 
 /** Starter code for permutations and combinations of distinct items
- *  @author
- **/
+ * @author
+ * Utkarsh Gandhi (usg170030)
+ * Khushboo Desai (kxd180009)
+ * Esha Punjabi   (ehp170000)
+ * Karan Thakker  (krt170130)
+ */
 
 package krt170130;
 
