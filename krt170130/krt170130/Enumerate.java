@@ -38,6 +38,11 @@ public class Enumerate<T> {
 
     // n = arr.length, choose k things, d elements arr[0..d-1] done
     // c more elements are needed from arr[d..n-1].  d = k-c.
+
+    /*
+     * Purpose          To permute the array.
+     * Parameters       Integer denoting number of elements that can be permuted.
+     */
     public void permute(int c) {  // To do for LP4
         if( c == 0 ) {
             visit(this.arr);
@@ -95,7 +100,10 @@ public class Enumerate<T> {
     }
 
     //-----------------------Utilities-----------------------------
-
+    /*
+     * Purpose          To swap the elements of the array.
+     * Parameters       Indices of the elements that need to be swapped.
+     */
     void swap(int i, int j) {
         T tmp = arr[i];
         arr[i] = arr[j];
